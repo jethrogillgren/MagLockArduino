@@ -84,6 +84,8 @@ void setup() {
   Serial.begin(9600);   // Initialize serial communications with the PC
 
   Wire.begin();
+
+  // initialize the LED pin as an output:
   pinMode(LED_BUILTIN, OUTPUT);
 
 
@@ -134,8 +136,6 @@ void loop() {
   //while the lock is engaged.
   //{
     d0 = sensor0.readRangeContinuous();
-    Serial.println(d0);
-    return;
     d1 = sensor1.readRangeContinuous();
     
     distance = ( d0+d1) / 2;
@@ -175,7 +175,8 @@ void loop() {
         Serial.println("Skipping as reads are not agreeing.");
         return;
       }
-  
+
+      //Tell the server.
       lastDistance = distance;
       SendDistancePacket( distance );
     }
