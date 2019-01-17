@@ -40,7 +40,7 @@ int lockPin = 3;
 bool locked = false;
 
 // RANGE
-#define RANGE 1
+#define RANGE 3
 elapsedMillis timeElapsed; //declare global if you don't want it reset every time loop runs
 uint8_t wobbleIgnore = 3;
 uint8_t d0;
@@ -53,8 +53,8 @@ uint8_t lastDistance = 0;
 #define address1 0x22
 
 ///* These Arduino pins must be wired to the IO0 pin of VL6180x */
-int enablePin0 = 5;
-int enablePin1 = 6;
+int enablePin0 = 6;
+int enablePin1 = 5;
 
 ///* Create a new instance for each sensor */
 VL6180X sensor0;
@@ -139,6 +139,13 @@ void loop() {
     d1 = sensor1.readRangeContinuous();
     
     distance = ( d0+d1) / 2;
+
+
+//    Serial.print(d0);
+//    Serial.print(" / ");
+//    Serial.println(d1);
+//    return;
+
     
     //Send updates regularly.  Sanity checks are not yet done, so that we at
     //least get some reading every 3s
@@ -172,7 +179,10 @@ void loop() {
   
       if( abs(d1-d0) > 15 )
       {
-        Serial.println("Skipping as reads are not agreeing.");
+        Serial.print("Skipping as reads are not agreeing:");
+        Serial.print(d0);
+        Serial.print(" / ");
+        Serial.println(d1);
         return;
       }
 
@@ -319,7 +329,7 @@ void SetSensorI2CAddress( int i, int enablePin, VL6180X *sensor, int address )
   sensor->setScaling(RANGE); // configure range or precision 1, 2 oder 3 mm
   delay(300);
   sensor->startInterleavedContinuous(100);
-  //sensor->startRangeContinuous(100);
+  //sensor->startRangeContinuous(50); <-- should work but causes only one sensor to function.
   delay(100);
 }
 
